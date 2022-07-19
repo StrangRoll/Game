@@ -7,6 +7,9 @@ public class PlayerAnimationChanger : MonoBehaviour
 {
     private Animator _animator;
     private SpriteRenderer _sprite;
+    private float _directionChangesProtection = 0.5f;
+    private WaitForSeconds _neededSecondsToProtect;
+    private bool _isDirectionReadyToChange = true;
 
     public void StartJumpAnimation()
     {
@@ -15,6 +18,11 @@ public class PlayerAnimationChanger : MonoBehaviour
 
     public void WallCollision()
     {
+        if (_isDirectionReadyToChange == false)
+            return;
+
+        _isDirectionReadyToChange = false;
+        StartCoroutine(DirectionProtectionTimer());
         _animator.SetTrigger(AnimatorPlayerController.WallCollisionTrigger);
         PlayerLookDirection.ChangeDirection();
         _sprite.flipX = PlayerLookDirection.Current;
@@ -24,6 +32,13 @@ public class PlayerAnimationChanger : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         _sprite = GetComponent<SpriteRenderer>();
+        _neededSecondsToProtect = new WaitForSeconds(_directionChangesProtection);
+    }
+
+    private IEnumerator DirectionProtectionTimer()
+    {
+        yield return _neededSecondsToProtect;
+        _isDirectionReadyToChange = true;
     }
 }
 

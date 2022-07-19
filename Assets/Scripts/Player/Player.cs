@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     private PlayerAnimationChanger _animationChanger;
     private int _startYPosition;
     private int _score = 0;
+    private bool _isJumping = false;
 
     public event UnityAction<int> ScoreChanged; 
 
@@ -40,8 +41,9 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.TryGetComponent<Wall>(out Wall wall))
         {
-            _movier.WallCollision();
             _animationChanger.WallCollision();
+            _movier.WallCollision();
+            _isJumping = false;
         }
     }
 
@@ -57,7 +59,11 @@ public class Player : MonoBehaviour
 
     private void OnJump()
     {
-        _movier.Jump();
-        _animationChanger.StartJumpAnimation();
+        if (_isJumping == false)
+        {
+            _animationChanger.StartJumpAnimation();
+            _movier.Jump();
+            _isJumping = true;
+        }
     } 
 }
