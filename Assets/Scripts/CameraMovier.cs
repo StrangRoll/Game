@@ -23,7 +23,7 @@ public class CameraMovier : MonoBehaviour
 
         if (transform.position.y - _previousPositionY >= _wallHeight)
         {
-            WallHeightReached?.Invoke(_wallHeight * 2);
+            WallHeightReached?.Invoke(_wallHeight);
             _previousPositionY = transform.position.y;
         }
     }

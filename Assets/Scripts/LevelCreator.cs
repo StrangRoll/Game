@@ -10,11 +10,13 @@ public class LevelCreator : MonoBehaviour
 
     private Queue<Wall> _leftWallsQueue;
     private Queue<Wall> _rightWallsQueue;
+    private int _wallsCount;
 
     private void Start()
     {
         _leftWallsQueue = new Queue<Wall>();
         _rightWallsQueue = new Queue<Wall>();
+        _wallsCount = _rightWalls.Length;
 
         foreach (Wall wall in _rightWalls)
         {
@@ -27,8 +29,9 @@ public class LevelCreator : MonoBehaviour
         }
     }
 
-    private void SpawnWall(float elevateWallCount)
+    private void SpawnWall(float wallHeight)
     {
+        var elevateWallCount = _wallsCount * wallHeight;
         Wall lowerLeftWall = _leftWallsQueue.Dequeue();
         lowerLeftWall.transform.position += new Vector3(0, elevateWallCount, 0);
         Wall lowerRightWall = _rightWallsQueue.Dequeue();
