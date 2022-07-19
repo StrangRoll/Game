@@ -11,46 +11,43 @@ public class PlayerMovier : MonoBehaviour
 
     public void Jump()
     {
-        _rigidBody.WakeUp();
-        _rigidBody.AddForce(playerJumpDirection.JumpDirection * _jumpForce, ForceMode2D.Impulse);
-        playerJumpDirection.ChangeDirection();
+        _rigidBody.simulated = true;
+        _rigidBody.AddForce(PlayerJumpDirection.CurrentVector * _jumpForce, ForceMode2D.Impulse);
+        PlayerJumpDirection.ChangeDirection();
+    }
+
+    public void WallCollision()
+    {
+        _rigidBody.simulated = false;
     }
 
     private void Start()
     {
         _rigidBody = GetComponent<Rigidbody2D>();
     }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.TryGetComponent<Wall>(out Wall wall))
-        {
-            _rigidBody.Sleep();
-        }
-    }
 }
 
-public static class playerJumpDirection
+public static class PlayerJumpDirection
 {
-    public static Vector2 JumpDirection;
+    public static Vector2 CurrentVector;
 
-    private static Vector2 jumpRightVector;
-    private static Vector2 jumpLeftVector;
-    private static float xRigthJumpDirection = 1.6f;
+    private static float xRigthJumpDirection = 1.1f;
+    private static Vector2 RightVector;
+    private static Vector2 LeftVector;
     private static float yJumpDirection = 1;
 
-    static playerJumpDirection()
+    static PlayerJumpDirection()
     {
-        jumpRightVector = new Vector2(xRigthJumpDirection, yJumpDirection).normalized;
-        jumpLeftVector = new Vector2(-xRigthJumpDirection, yJumpDirection).normalized;
-        JumpDirection = jumpRightVector;
+        RightVector = new Vector2(xRigthJumpDirection, yJumpDirection).normalized;
+        LeftVector = new Vector2(-xRigthJumpDirection, yJumpDirection).normalized;
+        CurrentVector = RightVector;
     }
 
     public static void ChangeDirection()
     {
-        if (JumpDirection == jumpRightVector)
-            JumpDirection = jumpLeftVector;
+        if (CurrentVector == RightVector)
+            CurrentVector = LeftVector;
         else
-            JumpDirection = jumpRightVector;
+            CurrentVector = RightVector;
     }
 }

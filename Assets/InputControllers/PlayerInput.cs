@@ -33,7 +33,7 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""id"": ""8f4ca53f-ab03-44f8-913d-54995b37f297"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """",
+                    ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
                 }
             ],
@@ -42,18 +42,7 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""8d08438b-58aa-45ce-bee8-b7e51d3f4a04"",
                     ""path"": ""<Keyboard>/space"",
-                    ""interactions"": ""Tap"",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard"",
-                    ""action"": ""Jump"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""270bd49f-1b3c-44ce-b9a5-56f2a4775d63"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""Tap"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
                     ""action"": ""Jump"",
@@ -64,10 +53,49 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""e555d1c8-5f81-4eff-9357-bbc1ac843376"",
                     ""path"": ""<Touchscreen>/primaryTouch/tap"",
-                    ""interactions"": ""Tap"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Touch"",
                     ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""World"",
+            ""id"": ""206d09a6-4732-4170-9fe2-5b59fdc1f7eb"",
+            ""actions"": [
+                {
+                    ""name"": ""Start"",
+                    ""type"": ""Button"",
+                    ""id"": ""5ac2ce6a-8c59-4716-9e49-e25f895e979e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""StartIteration"",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""19a1d1f8-64e7-4ab5-bad3-8c17951404ae"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Start"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""18dacaa4-e711-4b25-9edf-2f53500124e8"",
+                    ""path"": ""<Touchscreen>/primaryTouch/tap"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touch"",
+                    ""action"": ""Start"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -107,6 +135,9 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
+        // World
+        m_World = asset.FindActionMap("World", throwIfNotFound: true);
+        m_World_Start = m_World.FindAction("Start", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -195,6 +226,39 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
+
+    // World
+    private readonly InputActionMap m_World;
+    private IWorldActions m_WorldActionsCallbackInterface;
+    private readonly InputAction m_World_Start;
+    public struct WorldActions
+    {
+        private @PlayerInput m_Wrapper;
+        public WorldActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Start => m_Wrapper.m_World_Start;
+        public InputActionMap Get() { return m_Wrapper.m_World; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(WorldActions set) { return set.Get(); }
+        public void SetCallbacks(IWorldActions instance)
+        {
+            if (m_Wrapper.m_WorldActionsCallbackInterface != null)
+            {
+                @Start.started -= m_Wrapper.m_WorldActionsCallbackInterface.OnStart;
+                @Start.performed -= m_Wrapper.m_WorldActionsCallbackInterface.OnStart;
+                @Start.canceled -= m_Wrapper.m_WorldActionsCallbackInterface.OnStart;
+            }
+            m_Wrapper.m_WorldActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Start.started += instance.OnStart;
+                @Start.performed += instance.OnStart;
+                @Start.canceled += instance.OnStart;
+            }
+        }
+    }
+    public WorldActions @World => new WorldActions(this);
     private int m_KeyboardSchemeIndex = -1;
     public InputControlScheme KeyboardScheme
     {
@@ -216,5 +280,9 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
     public interface IPlayerActions
     {
         void OnJump(InputAction.CallbackContext context);
+    }
+    public interface IWorldActions
+    {
+        void OnStart(InputAction.CallbackContext context);
     }
 }

@@ -36,6 +36,15 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.TryGetComponent<Wall>(out Wall wall))
+        {
+            _movier.WallCollision();
+            _animationChanger.WallCollision();
+        }
+    }
+
     private void OnEnable()
     {
         _playerInput.Enable();
@@ -50,7 +59,5 @@ public class Player : MonoBehaviour
     {
         _movier.Jump();
         _animationChanger.StartJumpAnimation();
-    }
-
-  
+    } 
 }
