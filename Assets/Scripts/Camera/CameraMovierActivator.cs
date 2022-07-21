@@ -4,8 +4,13 @@ using UnityEngine;
 
 public class CameraMovierActivator : MonoBehaviour
 {
-    [SerializeField] GameStarter _gameStarter;
+    [SerializeField] GameCenter _gameCenter;
     [SerializeField] CameraMovier _cameraMovier;
+
+    private void DeActivateCameraMovier()
+    {
+        _cameraMovier.enabled = false;
+    }
 
     private void ActivateCameraMovier()
     {
@@ -14,11 +19,13 @@ public class CameraMovierActivator : MonoBehaviour
 
     private void OnEnable()
     {
-        _gameStarter.GameStarted += ActivateCameraMovier;
+        _gameCenter.GameStarted += ActivateCameraMovier;
+        _gameCenter.GameEnded += DeActivateCameraMovier;
     }
 
     private void OnDisable()
     {
-        _gameStarter.GameStarted -= ActivateCameraMovier;
+        _gameCenter.GameStarted -= ActivateCameraMovier;
+        _gameCenter.GameEnded -= DeActivateCameraMovier;
     }
 }

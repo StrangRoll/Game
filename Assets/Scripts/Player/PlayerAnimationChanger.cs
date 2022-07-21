@@ -10,6 +10,7 @@ public class PlayerAnimationChanger : MonoBehaviour
     private float _directionChangesProtection = 0.5f;
     private WaitForSeconds _neededSecondsToProtect;
     private bool _isDirectionReadyToChange = true;
+    private bool _startFlipX;
 
     public void StartJumpAnimation()
     {
@@ -28,11 +29,19 @@ public class PlayerAnimationChanger : MonoBehaviour
         _sprite.flipX = PlayerLookDirection.Current;
     }
 
+    public void Reset()
+    {
+        PlayerLookDirection.ResetDirection();
+        _animator.SetTrigger(AnimatorPlayerController.RetartTrigger);
+        _sprite.flipX = _startFlipX;
+    }
+
     private void Start()
     {
         _animator = GetComponent<Animator>();
         _sprite = GetComponent<SpriteRenderer>();
         _neededSecondsToProtect = new WaitForSeconds(_directionChangesProtection);
+        _startFlipX = _sprite.flipX;
     }
 
     private IEnumerator DirectionProtectionTimer()
@@ -47,20 +56,26 @@ public static class PlayerLookDirection
 
     public static bool Current;
 
-    private static bool Right = false;
-    private static bool Left = true;
+    private static bool right = false;
+    private static bool left = true;
+    private static bool start;
 
     static PlayerLookDirection()
     {
-        Current = Right;
+        Current = right;
+    }
+
+    public static void ResetDirection()
+    {
+        Current = start;
     }
 
     public static void ChangeDirection()
     {
-        if (Current == Right)
-            Current = Left;
+        if (Current == right)
+            Current = left;
         else
-            Current = Right;
+            Current = right;
     }
 
 }
@@ -69,4 +84,5 @@ public static class AnimatorPlayerController
 {
     public const string JumpTrigger = "JumpTrigger";
     public const string WallCollisionTrigger = "WallCollisionTrigger";
+    public const string RetartTrigger = "RestartTrigger";
 }
