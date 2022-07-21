@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerMovier : MonoBehaviour
 {
-    [SerializeField] private float _wallSlidingSpeed;
     [SerializeField] private float _jumpForce;
 
     private Rigidbody2D _rigidBody;
@@ -13,7 +12,7 @@ public class PlayerMovier : MonoBehaviour
 
     public void Jump()
     {
-        _rigidBody.simulated = true;
+        _rigidBody.simulated = true; 
         _rigidBody.AddForce(PlayerJumpDirection.CurrentVector * _jumpForce, ForceMode2D.Impulse);
         PlayerJumpDirection.ChangeDirection();
     }

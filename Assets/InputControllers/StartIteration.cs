@@ -3,12 +3,13 @@ using UnityEngine.InputSystem;
 public class StartIteration : IInputInteraction
 {
     public float MaxTapDuration = 0.2f;
-    private bool IsFirstClickReleased = false;
 
-    [UnityEditor.InitializeOnLoadMethod]
-    private static void Register()
+    private static bool IsFirstClickReleased = false;
+    private static GameCenter _gameCenter;
+
+    public static void ResetStartIteraton()
     {
-        InputSystem.RegisterInteraction<StartIteration>();
+        IsFirstClickReleased = false;
     }
 
     public void Process(ref InputInteractionContext context)
@@ -35,5 +36,11 @@ public class StartIteration : IInputInteraction
 
     public void Reset()
     {
+    }
+
+    [UnityEditor.InitializeOnLoadMethod]
+    private static void Register()
+    {
+        InputSystem.RegisterInteraction<StartIteration>();
     }
 }

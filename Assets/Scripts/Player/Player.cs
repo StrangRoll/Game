@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     private int _score = 0;
     private bool _isJumping = false;
     private BoxCollider2D _collider;
+    private WaitForFixedUpdate OneFixedFrame = new WaitForFixedUpdate();
 
     public event UnityAction<int> ScoreChanged; 
 
@@ -44,11 +45,11 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.TryGetComponent<Wall>(out Wall wall))
+        if (collision.gameObject.TryGetComponent<Wall>(out Wall wall) && _isJumping)
         {
+            _isJumping = false;
             _animationChanger.WallCollision();
             _movier.WallCollision();
-            _isJumping = false;
         }
 
         if (collision.gameObject.TryGetComponent<Row>(out Row row))
@@ -61,9 +62,9 @@ public class Player : MonoBehaviour
     {
         if (_isJumping == false)
         {
-            _animationChanger.StartJumpAnimation();
             _movier.Jump();
-            _isJumping = true;
+            _animationChanger.StartJumpAnimation();
+            StartCoroutine(WaitOneFixedFrameAndChangeIsjumping());
         }
     } 
 
@@ -94,5 +95,11 @@ public class Player : MonoBehaviour
         _playerInput.Disable();
         _gameCenter.GameEnded -= OnEnd;
         _gameCenter.GameRestarted -= OnRestart;
+    }
+
+    private IEnumerator WaitOneFixedFrameAndChangeIsjumping()
+    {
+        yield return OneFixedFrame;
+        _isJumping = true;
     }
 }

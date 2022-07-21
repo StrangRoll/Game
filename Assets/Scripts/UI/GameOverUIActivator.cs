@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameOverActivator : MonoBehaviour
+public class GameOverUIActivator : MonoBehaviour
 {
     [SerializeField] private GameCenter _gameCenter;
     [SerializeField] private TMP_Text _gameOverText;

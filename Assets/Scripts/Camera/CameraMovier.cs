@@ -9,12 +9,19 @@ public class CameraMovier : MonoBehaviour
     [SerializeField] private float _wallHeight;
 
     private float _previousPositionY;
+    private float _startPositionY;
 
     public event UnityAction<float> WallHeightReached;
+
+    public void Reset()
+    {
+        transform.position = new Vector3(transform.position.x, _startPositionY, transform.position.z);
+    }
 
     private void Start()
     {
         _previousPositionY = transform.position.y;
+        _startPositionY = transform.position.y;
     }
 
     private void Update()

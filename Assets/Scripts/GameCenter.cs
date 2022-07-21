@@ -19,6 +19,7 @@ public class GameCenter : MonoBehaviour
 
     public void OnRestart()
     {
+        StartIteration.ResetStartIteraton();
         GameRestarted?.Invoke();
     }
 

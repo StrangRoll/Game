@@ -17,15 +17,22 @@ public class CameraMovierActivator : MonoBehaviour
         _cameraMovier.enabled = true;
     }
 
+    private void ResetCameraPosition()
+    {
+        _cameraMovier.Reset();
+    }
+
     private void OnEnable()
     {
         _gameCenter.GameStarted += ActivateCameraMovier;
         _gameCenter.GameEnded += DeActivateCameraMovier;
+        _gameCenter.GameRestarted += ResetCameraPosition;
     }
 
     private void OnDisable()
     {
         _gameCenter.GameStarted -= ActivateCameraMovier;
         _gameCenter.GameEnded -= DeActivateCameraMovier;
+        _gameCenter.GameRestarted += ResetCameraPosition;
     }
 }
