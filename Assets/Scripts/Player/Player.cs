@@ -6,6 +6,7 @@ using UnityEngine.Events;
 [RequireComponent(typeof(PlayerMovier))]
 [RequireComponent(typeof(PlayerAnimationChanger))]
 [RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(SpriteRenderer))]
 
 public class Player : MonoBehaviour
 {
@@ -19,6 +20,10 @@ public class Player : MonoBehaviour
     private bool _isJumping = false;
     private BoxCollider2D _collider;
     private WaitForFixedUpdate OneFixedFrame = new WaitForFixedUpdate();
+    private Camera _camera;
+    private float _heroHalfHeight;
+    private float _screenHeight;
+
 
     public event UnityAction<int> ScoreChanged; 
 
@@ -30,6 +35,9 @@ public class Player : MonoBehaviour
         _animationChanger = GetComponent<PlayerAnimationChanger>();
         _startYPosition = (int)transform.position.y;
         _collider = GetComponent<BoxCollider2D>();
+        _camera = Camera.main;
+        _heroHalfHeight = GetComponent<SpriteRenderer>().sprite.rect.height / 2;
+        _screenHeight = _camera.ViewportToScreenPoint(Vector3.up).y;
     }
 
     private void Update()
@@ -41,6 +49,11 @@ public class Player : MonoBehaviour
             _score = currentYPosition - _startYPosition;
             ScoreChanged?.Invoke(_score);
         }
+
+        var heroScreenYPosition = _camera.WorldToScreenPoint(transform.position).y;
+
+        if (heroScreenYPosition < -_heroHalfHeight || heroScreenYPosition > _screenHeight + _heroHalfHeight)
+            _gameCenter.OnEnd();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

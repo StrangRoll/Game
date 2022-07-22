@@ -7,7 +7,10 @@ public class LevelCreator : MonoBehaviour
     [SerializeField] private CameraMovier _cameraMovier;
     [SerializeField] private Wall[] _rightWalls;
     [SerializeField] private Wall[] _leftWalls;
+    [SerializeField] private GameCenter _gameCenter;
 
+    private Vector3[] _rightWallsStartPosition;
+    private Vector3[] _leftWallsStartPosition;
     private Queue<Wall> _leftWallsQueue;
     private Queue<Wall> _rightWallsQueue;
     private int _wallsCount;
@@ -17,15 +20,19 @@ public class LevelCreator : MonoBehaviour
         _leftWallsQueue = new Queue<Wall>();
         _rightWallsQueue = new Queue<Wall>();
         _wallsCount = _rightWalls.Length;
+        _leftWallsStartPosition = new Vector3[_wallsCount];
+        _rightWallsStartPosition = new Vector3[_wallsCount];
 
-        foreach (Wall wall in _rightWalls)
+        for (int i = 0; i < _wallsCount; i++)
         {
-            _rightWallsQueue.Enqueue(wall);
+            _rightWallsQueue.Enqueue(_rightWalls[i]);
+            _rightWallsStartPosition[i] = _rightWalls[i].transform.position;
         }
 
-        foreach (Wall wall in _leftWalls)
+        for (int i = 0; i < _wallsCount; i++)
         {
-            _leftWallsQueue.Enqueue(wall);
+            _leftWallsQueue.Enqueue(_leftWalls[i]);
+            _leftWallsStartPosition[i] = _leftWalls[i].transform.position;
         }
     }
 
@@ -40,13 +47,33 @@ public class LevelCreator : MonoBehaviour
         _rightWallsQueue.Enqueue(lowerRightWall);
     }
 
+    private void ResetWallsPosition()
+    {
+        _leftWallsQueue = new Queue<Wall>();
+        _rightWallsQueue = new Queue<Wall>();
+
+        for (int i = 0; i<_wallsCount; i++)
+        {
+            _rightWallsQueue.Enqueue(_rightWalls[i]);
+            _rightWalls[i].transform.position = _rightWallsStartPosition[i];
+        }
+
+        for (int i = 0; i < _wallsCount; i++)
+        {
+            _leftWallsQueue.Enqueue(_leftWalls[i]);
+            _leftWalls[i].transform.position = _leftWallsStartPosition[i];
+        }
+    }
+
     private void OnEnable()
     {
         _cameraMovier.WallHeightReached += SpawnWall;
+        _gameCenter.GameRestarted += ResetWallsPosition;
     }
 
     private void OnDisable()
     {
         _cameraMovier.WallHeightReached -= SpawnWall;
+        _gameCenter.GameRestarted -= ResetWallsPosition;
     }
 }

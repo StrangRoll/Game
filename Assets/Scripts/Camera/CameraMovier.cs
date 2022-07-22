@@ -16,6 +16,7 @@ public class CameraMovier : MonoBehaviour
     public void Reset()
     {
         transform.position = new Vector3(transform.position.x, _startPositionY, transform.position.z);
+        _previousPositionY = _startPositionY;
     }
 
     private void Start()
