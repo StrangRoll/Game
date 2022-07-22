@@ -8,6 +8,7 @@ public class PlayerAnimationChanger : MonoBehaviour
     private Animator _animator;
     private SpriteRenderer _sprite;
     private bool _startFlipX;
+    private bool _currentLookDirection;
 
     public void StartJumpAnimation()
     {
@@ -17,8 +18,8 @@ public class PlayerAnimationChanger : MonoBehaviour
     public void WallCollision()
     {
         _animator.SetTrigger(AnimatorPlayerController.WallCollisionTrigger);
-        PlayerLookDirection.ChangeDirection();
-        _sprite.flipX = PlayerLookDirection.Current;
+        _currentLookDirection = PlayerLookDirection.ChangeDirection(_currentLookDirection);
+        _sprite.flipX = _currentLookDirection;
     }
 
     public void Reset()
@@ -26,6 +27,7 @@ public class PlayerAnimationChanger : MonoBehaviour
         PlayerLookDirection.ResetDirection();
         _animator.SetTrigger(AnimatorPlayerController.RetartTrigger);
         _sprite.flipX = _startFlipX;
+        _currentLookDirection = PlayerLookDirection.ResetDirection();
     }
 
     private void Start()
@@ -33,34 +35,32 @@ public class PlayerAnimationChanger : MonoBehaviour
         _animator = GetComponent<Animator>();
         _sprite = GetComponent<SpriteRenderer>();
         _startFlipX = _sprite.flipX;
+        Reset();
     }
 }
 
 public static class PlayerLookDirection
 {
-
-    public static bool Current;
-
     private static bool right = false;
     private static bool left = true;
     private static bool start;
 
     static PlayerLookDirection()
     {
-        Current = right;
+        start = right;
     }
 
-    public static void ResetDirection()
+    public static bool ResetDirection()
     {
-        Current = start;
+        return start;
     }
 
-    public static void ChangeDirection()
+    public static bool ChangeDirection(bool currentLookDirection)
     {
-        if (Current == right)
-            Current = left;
+        if (currentLookDirection == right)
+            return left;
         else
-            Current = right;
+            return right;
     }
 
 }

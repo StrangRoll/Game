@@ -83,6 +83,7 @@ public class Player : MonoBehaviour
 
     private void OnEnd()
     {
+        _movier.ResetGravityScale();
         _collider.enabled = false;
     }
 

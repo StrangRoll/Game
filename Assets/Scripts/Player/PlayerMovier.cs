@@ -9,12 +9,14 @@ public class PlayerMovier : MonoBehaviour
     private Rigidbody2D _rigidBody;
     private Vector3 _startPosition;
     private Quaternion _startRotation;
+    private Vector2 _currentJumpDirection;
+    private float _startGravityScale;
 
     public void Jump()
     {
-        _rigidBody.simulated = true; 
-        _rigidBody.AddForce(PlayerJumpDirection.CurrentVector * _jumpForce, ForceMode2D.Impulse);
-        PlayerJumpDirection.ChangeDirection();
+        _rigidBody.gravityScale = _startGravityScale; 
+        _rigidBody.AddForce(_currentJumpDirection * _jumpForce, ForceMode2D.Impulse);
+        _currentJumpDirection = PlayerJumpDirection.ChangeDirection(_currentJumpDirection);
     }
 
     public void Reset()
@@ -23,26 +25,31 @@ public class PlayerMovier : MonoBehaviour
         _rigidBody.angularVelocity = 0;
         transform.rotation = _startRotation;
         transform.position = _startPosition;
-        PlayerJumpDirection.ResetDirection();
+        _currentJumpDirection = PlayerJumpDirection.ResetDirection();
     }
 
     public void WallCollision()
     {
-        _rigidBody.simulated = false;
+        _rigidBody.gravityScale = 0;
+    }
+
+    public void ResetGravityScale()
+    {
+        _rigidBody.gravityScale = _startGravityScale;
     }
 
     private void Start()
     {
         _rigidBody = GetComponent<Rigidbody2D>();
+        _startGravityScale = _rigidBody.gravityScale;
         _startPosition = transform.position;
         _startRotation = transform.rotation;
+        Reset();
     }
 }
 
 public static class PlayerJumpDirection
 {
-    public static Vector2 CurrentVector;
-
     private static float xRigthJumpDirection = 1.1f;
     private static Vector2 rightVector;
     private static Vector2 leftVector;
@@ -52,19 +59,18 @@ public static class PlayerJumpDirection
     {
         rightVector = new Vector2(xRigthJumpDirection, yJumpDirection).normalized;
         leftVector = new Vector2(-xRigthJumpDirection, yJumpDirection).normalized;
-        CurrentVector = rightVector;
     }
 
-    public static void ResetDirection()
+    public static Vector2 ResetDirection()
     {
-        CurrentVector = rightVector;
+        return rightVector;
     }
 
-    public static void ChangeDirection()
+    public static Vector2 ChangeDirection(Vector2 currentDirection)
     {
-        if (CurrentVector == rightVector)
-            CurrentVector = leftVector;
+        if (currentDirection == rightVector)
+            return leftVector;
         else
-            CurrentVector = rightVector;
+            return rightVector;
     }
 }
