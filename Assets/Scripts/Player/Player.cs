@@ -5,6 +5,7 @@ using UnityEngine.Events;
 
 [RequireComponent(typeof(PlayerMovier))]
 [RequireComponent(typeof(PlayerAnimationChanger))]
+[RequireComponent(typeof(PlayerSoundController))]
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
 
@@ -15,6 +16,7 @@ public class Player : MonoBehaviour
     private PlayerInput _playerInput;
     private PlayerMovier _movier;
     private PlayerAnimationChanger _animationChanger;
+    private PlayerSoundController _soundController;
     private int _startYPosition;
     private int _score = 0;
     private bool _isJumping = false;
@@ -33,6 +35,7 @@ public class Player : MonoBehaviour
         _playerInput.Player.Jump.performed += ctx => OnJump();
         _movier = GetComponent<PlayerMovier>();
         _animationChanger = GetComponent<PlayerAnimationChanger>();
+        _soundController = GetComponent<PlayerSoundController>();
         _startYPosition = (int)transform.position.y;
         _collider = GetComponent<BoxCollider2D>();
         _camera = Camera.main;
@@ -77,6 +80,7 @@ public class Player : MonoBehaviour
         {
             _movier.Jump();
             _animationChanger.StartJumpAnimation();
+            _soundController.Jump();
             StartCoroutine(WaitOneFixedFrameAndChangeIsjumping());
         }
     } 
@@ -84,6 +88,7 @@ public class Player : MonoBehaviour
     private void OnEnd()
     {
         _movier.ResetGravityScale();
+        _soundController.Death();
         _collider.enabled = false;
     }
 

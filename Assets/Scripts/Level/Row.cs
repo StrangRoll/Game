@@ -6,11 +6,19 @@ public class Row : MonoBehaviour
 {
     private int _direction;
     private float _speed;
+    private bool _isReadyToChangeDirection = true;
+    private float _doubleChangeDirectionDefendorTime = 0.5f;
+    private WaitForSeconds _whaitDoubleDirectionDefend;
 
     public void Init(int startDirection, float speed)
     {
         _direction = startDirection;
         _speed = speed;
+    }
+
+    private void Awake()
+    {
+        _whaitDoubleDirectionDefend = new WaitForSeconds(_doubleChangeDirectionDefendorTime);
     }
 
     private void Update()
@@ -22,8 +30,19 @@ public class Row : MonoBehaviour
     {
         if (collision.gameObject.TryGetComponent<Wall>(out Wall wall))
         {
-            _direction = RowDirection.ChangeDirection(_direction);
+            if (_isReadyToChangeDirection)
+            {
+                _direction = RowDirection.ChangeDirection(_direction);
+                _isReadyToChangeDirection = false;
+                StartCoroutine(DoubleDirectionChangeDefender());
+            }
         }
+    }
+
+    private IEnumerator DoubleDirectionChangeDefender()
+    {
+        yield return _whaitDoubleDirectionDefend;
+        _isReadyToChangeDirection = true;
     }
 }
 

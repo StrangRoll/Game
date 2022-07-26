@@ -7,6 +7,7 @@ public class GameCenter : MonoBehaviour
 {
     private PlayerInput _playerInput;
     private GameCenter _center;
+    private bool _isGameEnded = false;
 
     public event UnityAction GameStarted;
     public event UnityAction GameEnded;
@@ -14,11 +15,16 @@ public class GameCenter : MonoBehaviour
 
     public void OnEnd()
     {
-        GameEnded?.Invoke();
+        if (_isGameEnded == false)
+        {
+            GameEnded?.Invoke();
+            _isGameEnded = true;
+        }
     }
 
     public void OnRestart()
     {
+        _isGameEnded = false;
         StartIteration.ResetStartIteraton();
         GameRestarted?.Invoke();
     }

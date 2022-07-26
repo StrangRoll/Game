@@ -17,17 +17,22 @@ public class RowSpawnerActivator : MonoBehaviour
         _rowSpawner.enabled = true;
     }
 
+    private void DeactivateRows()
+    {
+        _rowSpawner.DeactivateRows();
+    }
+
     private void OnEnable()
     {
         _gameCenter.GameStarted += ActivateRowSpawner;
         _gameCenter.GameEnded += DeActivateRowSpawner;
-        _gameCenter.GameRestarted += ActivateRowSpawner;
+        _gameCenter.GameRestarted += DeactivateRows;
     }
 
     private void OnDisable()
     {
         _gameCenter.GameStarted -= ActivateRowSpawner;
         _gameCenter.GameEnded -= DeActivateRowSpawner;
-        _gameCenter.GameRestarted += ActivateRowSpawner;
+        _gameCenter.GameRestarted += DeactivateRows;
     }
 }
