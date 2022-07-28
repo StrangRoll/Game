@@ -37,10 +37,4 @@ public class StartIteration : IInputInteraction
     public void Reset()
     {
     }
-
-    [UnityEditor.InitializeOnLoadMethod]
-    private static void Register()
-    {
-        InputSystem.RegisterInteraction<StartIteration>();
-    }
 }
