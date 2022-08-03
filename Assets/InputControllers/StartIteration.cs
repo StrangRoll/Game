@@ -1,11 +1,19 @@
 using UnityEngine.InputSystem;
 
+#if UNITY_EDITOR
+[UnityEditor.InitializeOnLoad]
+#endif
+
 public class StartIteration : IInputInteraction
 {
     public float MaxTapDuration = 0.2f;
 
     private static bool IsFirstClickReleased = false;
-    private static GameCenter _gameCenter;
+
+    static StartIteration()
+    {
+        InputSystem.RegisterInteraction<StartIteration>();
+    }
 
     public static void ResetStartIteraton()
     {

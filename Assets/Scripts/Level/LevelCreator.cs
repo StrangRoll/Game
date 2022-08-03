@@ -15,6 +15,12 @@ public class LevelCreator : MonoBehaviour
     private Queue<Wall> _rightWallsQueue;
     private int _wallsCount;
 
+    private void OnEnable()
+    {
+        _cameraMovier.WallHeightReached += OnWallHeightReached;
+        _gameCenter.GameRestarted += OnGameRestarted;
+    }
+
     private void Start()
     {
         _leftWallsQueue = new Queue<Wall>();
@@ -36,7 +42,13 @@ public class LevelCreator : MonoBehaviour
         }
     }
 
-    private void SpawnWall(float wallHeight)
+    private void OnDisable()
+    {
+        _cameraMovier.WallHeightReached -= OnWallHeightReached;
+        _gameCenter.GameRestarted -= OnGameRestarted;
+    }
+
+    private void OnWallHeightReached(float wallHeight)
     {
         var elevateWallCount = _wallsCount * wallHeight;
         Wall lowerLeftWall = _leftWallsQueue.Dequeue();
@@ -47,7 +59,7 @@ public class LevelCreator : MonoBehaviour
         _rightWallsQueue.Enqueue(lowerRightWall);
     }
 
-    private void ResetWallsPosition()
+    private void OnGameRestarted()
     {
         _leftWallsQueue = new Queue<Wall>();
         _rightWallsQueue = new Queue<Wall>();
@@ -63,17 +75,5 @@ public class LevelCreator : MonoBehaviour
             _leftWallsQueue.Enqueue(_leftWalls[i]);
             _leftWalls[i].transform.position = _leftWallsStartPosition[i];
         }
-    }
-
-    private void OnEnable()
-    {
-        _cameraMovier.WallHeightReached += SpawnWall;
-        _gameCenter.GameRestarted += ResetWallsPosition;
-    }
-
-    private void OnDisable()
-    {
-        _cameraMovier.WallHeightReached -= SpawnWall;
-        _gameCenter.GameRestarted -= ResetWallsPosition;
     }
 }

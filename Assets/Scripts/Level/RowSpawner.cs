@@ -56,7 +56,6 @@ public class RowSpawner : MonoBehaviour
         StopCoroutine(_spawnCoroutine);
     }
 
-
     private IEnumerator RowSpawnTimer()
     {
         var rowIndex = 0;

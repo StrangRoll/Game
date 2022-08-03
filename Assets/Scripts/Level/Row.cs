@@ -6,17 +6,11 @@ public class Row : MonoBehaviour
 {
     private int _direction;
     private float _speed;
-    private float _doubleChangeDirectionDefendorTime = 0.5f;
 
     public void Init(int startDirection, float speed)
     {
         _direction = startDirection;
         _speed = speed;
-    }
-
-    private void Update()
-    {
-        transform.position += Vector3.right * _direction * _speed * Time.deltaTime;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -25,6 +19,11 @@ public class Row : MonoBehaviour
         {
             _direction = RowDirection.ChangeDirection(_direction);
         }
+    }
+
+    private void Update()
+    {
+        transform.position += Vector3.right * _direction * _speed * Time.deltaTime;
     }
 }
 

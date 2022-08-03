@@ -36,11 +36,6 @@ public class GameCenter : MonoBehaviour
         _center = GetComponent<GameCenter>();
     }
 
-    private void OnStart()
-    {
-        GameStarted?.Invoke();
-    }
-
     private void OnEnable()
     {
         _playerInput.Enable();
@@ -50,4 +45,10 @@ public class GameCenter : MonoBehaviour
     {
         _playerInput.Disable();
     }
+
+    private void OnStart()
+    {
+        GameStarted?.Invoke();
+    }
+    
 }

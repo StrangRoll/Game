@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -43,20 +42,11 @@ public class Player : MonoBehaviour
         _screenHeight = _camera.ViewportToScreenPoint(Vector3.up).y;
     }
 
-    private void Update()
+    private void OnEnable()
     {
-        var currentYPosition = (int)transform.position.y;
-
-        if (currentYPosition - _startYPosition > _score)
-        {
-            _score = currentYPosition - _startYPosition;
-            ScoreChanged?.Invoke(_score);
-        }
-
-        var heroScreenYPosition = _camera.WorldToScreenPoint(transform.position).y;
-
-        if (heroScreenYPosition < -_heroHalfHeight || heroScreenYPosition > _screenHeight + _heroHalfHeight)
-            _gameCenter.OnEnd();
+        _playerInput.Enable();
+        _gameCenter.GameEnded += OnGameEnded;
+        _gameCenter.GameRestarted += OnGameRestarted;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -74,6 +64,29 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        var currentYPosition = (int)transform.position.y;
+
+        if (currentYPosition - _startYPosition > _score)
+        {
+            _score = currentYPosition - _startYPosition;
+            ScoreChanged?.Invoke(_score);
+        }
+
+        var heroScreenYPosition = _camera.WorldToScreenPoint(transform.position).y;
+
+        if (heroScreenYPosition < -_heroHalfHeight || heroScreenYPosition > _screenHeight + _heroHalfHeight)
+            _gameCenter.OnEnd();
+    }
+
+    private void OnDisable()
+    {
+        _playerInput.Disable();
+        _gameCenter.GameEnded -= OnGameEnded;
+        _gameCenter.GameRestarted -= OnGameRestarted;
+    }
+
     private void OnJump()
     {
         if (_isJumping == false)
@@ -85,14 +98,14 @@ public class Player : MonoBehaviour
         }
     } 
 
-    private void OnEnd()
+    private void OnGameEnded()
     {
         _movier.ResetGravityScale();
         _soundController.Death();
         _collider.enabled = false;
     }
 
-    private void OnRestart()
+    private void OnGameRestarted()
     {
         _collider.enabled = true;
         _movier.Reset();
@@ -100,20 +113,6 @@ public class Player : MonoBehaviour
         _isJumping = false;
         _score = 0;
         ScoreChanged?.Invoke(_score);
-    }
-
-    private void OnEnable()
-    {
-        _playerInput.Enable();
-        _gameCenter.GameEnded += OnEnd;
-        _gameCenter.GameRestarted += OnRestart;
-    }
-
-    private void OnDisable()
-    {
-        _playerInput.Disable();
-        _gameCenter.GameEnded -= OnEnd;
-        _gameCenter.GameRestarted -= OnRestart;
     }
 
     private IEnumerator WaitOneFixedFrameAndChangeIsjumping()
