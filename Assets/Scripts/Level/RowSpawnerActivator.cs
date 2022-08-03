@@ -7,32 +7,32 @@ public class RowSpawnerActivator : MonoBehaviour
     [SerializeField] GameCenter _gameCenter;
     [SerializeField] RowSpawner _rowSpawner;
 
-    private void DeActivateRowSpawner()
-    {
-        _rowSpawner.enabled = false;
-    }
-
-    private void ActivateRowSpawner()
-    {
-        _rowSpawner.enabled = true;
-    }
-
-    private void DeactivateRows()
-    {
-        _rowSpawner.DeactivateRows();
-    }
-
     private void OnEnable()
     {
-        _gameCenter.GameStarted += ActivateRowSpawner;
-        _gameCenter.GameEnded += DeActivateRowSpawner;
-        _gameCenter.GameRestarted += DeactivateRows;
+        _gameCenter.GameStarted += OnGameStarted;
+        _gameCenter.GameEnded += OnGameEnded;
+        _gameCenter.GameRestarted += OnGameRestarted;
     }
 
     private void OnDisable()
     {
-        _gameCenter.GameStarted -= ActivateRowSpawner;
-        _gameCenter.GameEnded -= DeActivateRowSpawner;
-        _gameCenter.GameRestarted += DeactivateRows;
+        _gameCenter.GameStarted -= OnGameStarted;
+        _gameCenter.GameEnded -= OnGameEnded;
+        _gameCenter.GameRestarted += OnGameRestarted;
+    }
+
+    private void OnGameEnded()
+    {
+        _rowSpawner.enabled = false;
+    }
+
+    private void OnGameStarted()
+    {
+        _rowSpawner.enabled = true;
+    }
+
+    private void OnGameRestarted()
+    {
+        _rowSpawner.DeactivateRows();
     }
 }

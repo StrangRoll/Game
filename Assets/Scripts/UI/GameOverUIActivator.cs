@@ -10,13 +10,27 @@ public class GameOverUIActivator : MonoBehaviour
     [SerializeField] private TMP_Text _gameOverText;
     [SerializeField] private Button _restartButton;
 
-    private void OnEnd()
+    private void OnEnable()
+    {
+        _gameCenter.GameEnded += OnGameEnded;
+        _gameCenter.GameRestarted += OnGameRestarted;
+        _restartButton.onClick.AddListener(OnRestartButtonClicked);
+    }
+
+    private void OnDisable()
+    {
+        _gameCenter.GameEnded -= OnGameEnded;
+        _gameCenter.GameRestarted -= OnGameRestarted;
+        _restartButton.onClick.RemoveListener(OnRestartButtonClicked);
+    }
+
+    private void OnGameEnded()
     {
         _gameOverText.gameObject.SetActive(true);
         _restartButton.gameObject.SetActive(true);
     }
 
-    private void OnRestart()
+    private void OnGameRestarted()
     {
         _gameOverText.gameObject.SetActive(false);
         _restartButton.gameObject.SetActive(false);
@@ -25,19 +39,5 @@ public class GameOverUIActivator : MonoBehaviour
     private void OnRestartButtonClicked()
     {
         _gameCenter.OnRestart();
-    }
-
-    private void OnEnable()
-    {
-        _gameCenter.GameEnded += OnEnd;
-        _gameCenter.GameRestarted += OnRestart;
-        _restartButton.onClick.AddListener(OnRestartButtonClicked);
-    }
-
-    private void OnDisable()
-    {
-        _gameCenter.GameEnded -= OnEnd;
-        _gameCenter.GameRestarted -= OnRestart;
-        _restartButton.onClick.RemoveListener(OnRestartButtonClicked);
     }
 }
