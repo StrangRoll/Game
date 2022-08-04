@@ -25,7 +25,6 @@ public class Player : MonoBehaviour
     private float _heroHalfHeight;
     private float _screenHeight;
 
-
     public event UnityAction<int> ScoreChanged; 
 
     private void Awake()

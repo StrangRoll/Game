@@ -10,6 +10,14 @@ public class PlayerAnimationChanger : MonoBehaviour
     private bool _startFlipX;
     private bool _currentLookDirection;
 
+    private void Start()
+    {
+        _animator = GetComponent<Animator>();
+        _sprite = GetComponent<SpriteRenderer>();
+        _startFlipX = _sprite.flipX;
+        Reset();
+    }
+
     public void StartJumpAnimation()
     {
         _animator.SetTrigger(AnimatorPlayerController.JumpTrigger);
@@ -28,14 +36,6 @@ public class PlayerAnimationChanger : MonoBehaviour
         _animator.SetTrigger(AnimatorPlayerController.RetartTrigger);
         _sprite.flipX = _startFlipX;
         _currentLookDirection = PlayerLookDirection.ResetDirection();
-    }
-
-    private void Start()
-    {
-        _animator = GetComponent<Animator>();
-        _sprite = GetComponent<SpriteRenderer>();
-        _startFlipX = _sprite.flipX;
-        Reset();
     }
 }
 

@@ -20,14 +20,6 @@ public class RowSpawner : MonoBehaviour
     private Row[] _rows;
     private int _rowCount = 5;
 
-    public void DeactivateRows()
-    {
-        for (int i = 0; i < _rowCount; i++)
-        {
-            _rows[i].gameObject.SetActive(false);
-        }
-    }
-
     private void Awake()
     {
         _leftSpawnX = _leftSpawnPosition.position.x;
@@ -54,6 +46,14 @@ public class RowSpawner : MonoBehaviour
     private void OnDisable()
     {
         StopCoroutine(_spawnCoroutine);
+    }
+
+    public void DeactivateRows()
+    {
+        for (int i = 0; i < _rowCount; i++)
+        {
+            _rows[i].gameObject.SetActive(false);
+        }
     }
 
     private IEnumerator RowSpawnTimer()

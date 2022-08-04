@@ -7,12 +7,6 @@ public class Row : MonoBehaviour
     private int _direction;
     private float _speed;
 
-    public void Init(int startDirection, float speed)
-    {
-        _direction = startDirection;
-        _speed = speed;
-    }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.TryGetComponent<Wall>(out Wall wall))
@@ -24,6 +18,12 @@ public class Row : MonoBehaviour
     private void Update()
     {
         transform.position += Vector3.right * _direction * _speed * Time.deltaTime;
+    }
+
+    public void Init(int startDirection, float speed)
+    {
+        _direction = startDirection;
+        _speed = speed;
     }
 }
 

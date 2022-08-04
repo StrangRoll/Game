@@ -13,22 +13,6 @@ public class GameCenter : MonoBehaviour
     public event UnityAction GameEnded;
     public event UnityAction GameRestarted;
 
-    public void OnEnd()
-    {
-        if (_isGameEnded == false)
-        {
-            GameEnded?.Invoke();
-            _isGameEnded = true;
-        }
-    }
-
-    public void OnRestart()
-    {
-        _isGameEnded = false;
-        StartIteration.ResetStartIteraton();
-        GameRestarted?.Invoke();
-    }
-
     private void Awake()
     {
         _playerInput = new PlayerInput();
@@ -46,9 +30,24 @@ public class GameCenter : MonoBehaviour
         _playerInput.Disable();
     }
 
+    public void OnEnd()
+    {
+        if (_isGameEnded == false)
+        {
+            GameEnded?.Invoke();
+            _isGameEnded = true;
+        }
+    }
+
+    public void OnRestart()
+    {
+        _isGameEnded = false;
+        StartIteration.ResetStartIteraton();
+        GameRestarted?.Invoke();
+    }
+
     private void OnStart()
     {
         GameStarted?.Invoke();
     }
-    
 }

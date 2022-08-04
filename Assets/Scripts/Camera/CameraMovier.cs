@@ -13,12 +13,6 @@ public class CameraMovier : MonoBehaviour
 
     public event UnityAction<float> WallHeightReached;
 
-    public void Reset()
-    {
-        transform.position = new Vector3(transform.position.x, _startPositionY, transform.position.z);
-        _previousPositionY = _startPositionY;
-    }
-
     private void Start()
     {
         _previousPositionY = transform.position.y;
@@ -34,5 +28,11 @@ public class CameraMovier : MonoBehaviour
             WallHeightReached?.Invoke(_wallHeight);
             _previousPositionY = transform.position.y;
         }
+    }
+
+    public void Reset()
+    {
+        transform.position = new Vector3(transform.position.x, _startPositionY, transform.position.z);
+        _previousPositionY = _startPositionY;
     }
 }

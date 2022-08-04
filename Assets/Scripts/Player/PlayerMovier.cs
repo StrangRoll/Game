@@ -12,6 +12,15 @@ public class PlayerMovier : MonoBehaviour
     private Vector2 _currentJumpDirection;
     private float _startGravityScale;
 
+    private void Start()
+    {
+        _rigidBody = GetComponent<Rigidbody2D>();
+        _startGravityScale = _rigidBody.gravityScale;
+        _startPosition = transform.position;
+        _startRotation = transform.rotation;
+        Reset();
+    }
+
     public void Jump()
     {
         _rigidBody.gravityScale = _startGravityScale; 
@@ -36,15 +45,6 @@ public class PlayerMovier : MonoBehaviour
     public void ResetGravityScale()
     {
         _rigidBody.gravityScale = _startGravityScale;
-    }
-
-    private void Start()
-    {
-        _rigidBody = GetComponent<Rigidbody2D>();
-        _startGravityScale = _rigidBody.gravityScale;
-        _startPosition = transform.position;
-        _startRotation = transform.rotation;
-        Reset();
     }
 }
 
