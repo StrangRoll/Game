@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class RowSpawnerActivator : MonoBehaviour
 {
-    [SerializeField] GameCenter _gameCenter;
-    [SerializeField] RowSpawner _rowSpawner;
+    [SerializeField] private GameCenter _gameCenter;
+    [SerializeField] private RowSpawner _rowSpawner;
 
     private void OnEnable()
     {

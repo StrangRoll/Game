@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class CameraMovierActivator : MonoBehaviour
 {
-    [SerializeField] GameCenter _gameCenter;
-    [SerializeField] CameraMovier _cameraMovier;
+    [SerializeField] private GameCenter _gameCenter;
+    [SerializeField] private CameraMovier _cameraMovier;
 
     private void OnEnable()
     {
