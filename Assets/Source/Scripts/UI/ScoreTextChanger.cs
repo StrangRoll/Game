@@ -1,10 +1,12 @@
 using TMPro;
 using UnityEngine;
+using Zenject;
 
 public class ScoreTextChanger : MonoBehaviour
 {
     [SerializeField] private TMP_Text _scoreText;
-    [SerializeField] private Player _player;
+
+    [Inject] private Player _player;
 
     private void OnEnable()
     {

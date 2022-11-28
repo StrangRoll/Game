@@ -1,8 +1,11 @@
 using UnityEngine;
 using UnityEngine.Events;
+using Zenject;
 
 public class GameCenter : MonoBehaviour
 {
+    [Inject] private VideoAdd _videoAdd;
+
     private PlayerInput _playerInput;
     private GameCenter _center;
     private bool _isGameEnded = false;
@@ -10,6 +13,7 @@ public class GameCenter : MonoBehaviour
     public event UnityAction GameStarted;
     public event UnityAction GameEnded;
     public event UnityAction GameRestarted;
+    public event UnityAction Game—ontinued;
 
     private void Awake()
     {
@@ -21,11 +25,13 @@ public class GameCenter : MonoBehaviour
     private void OnEnable()
     {
         _playerInput.Enable();
+        _videoAdd.VideoRewardCollected += OnVideoRewardCollected;
     }
 
     private void OnDisable()
     {
         _playerInput.Disable();
+        _videoAdd.VideoRewardCollected -= OnVideoRewardCollected;
     }
 
     public void OnEnd()
@@ -47,5 +53,12 @@ public class GameCenter : MonoBehaviour
     private void OnStart()
     {
         GameStarted?.Invoke();
+    }
+
+    private void OnVideoRewardCollected()
+    {
+        Game—ontinued?.Invoke();
+        _isGameEnded = false;
+        StartIteration.ResetStartIteraton();
     }
 }

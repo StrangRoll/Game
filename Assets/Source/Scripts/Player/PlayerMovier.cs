@@ -1,4 +1,5 @@
 using UnityEngine;
+using Zenject;
 
 [RequireComponent(typeof(Rigidbody2D))]
 
@@ -6,11 +7,18 @@ public class PlayerMovier : MonoBehaviour
 {
     [SerializeField] private float _jumpForce;
 
+    [Inject] private PlayerReviver _reviver;
+
     private Rigidbody2D _rigidBody;
     private Vector3 _startPosition;
     private Quaternion _startRotation;
     private Vector2 _currentJumpDirection;
     private float _startGravityScale;
+
+    private void OnEnable()
+    {
+        _reviver.PlayerRevived += OnPlayerRevived;
+    }
 
     private void Start()
     {
@@ -19,6 +27,11 @@ public class PlayerMovier : MonoBehaviour
         _startPosition = transform.position;
         _startRotation = transform.rotation;
         Reset();
+    }
+
+    private void OnDisable()
+    {
+        _reviver.PlayerRevived -= OnPlayerRevived;
     }
 
     public void Jump()
@@ -45,6 +58,15 @@ public class PlayerMovier : MonoBehaviour
     public void ResetGravityScale()
     {
         _rigidBody.gravityScale = _startGravityScale;
+    }
+
+    private void OnPlayerRevived()
+    {
+        _rigidBody.velocity = Vector2.zero;
+        _rigidBody.angularVelocity = 0;
+        _rigidBody.gravityScale = 0;
+        transform.rotation = _startRotation;
+        _currentJumpDirection = PlayerJumpDirection.ResetDirection();
     }
 }
 

@@ -1,12 +1,20 @@
 using UnityEngine;
+using Zenject;
 
 [RequireComponent(typeof(Animator))]
 public class PlayerAnimationChanger : MonoBehaviour
 {
+    [Inject] private PlayerReviver _reviver;
+
     private Animator _animator;
     private SpriteRenderer _sprite;
     private bool _startFlipX;
     private bool _currentLookDirection;
+
+    private void OnEnable()
+    {
+        _reviver.PlayerRevived += OnPlayerRevived;
+    }
 
     private void Start()
     {
@@ -14,6 +22,11 @@ public class PlayerAnimationChanger : MonoBehaviour
         _sprite = GetComponent<SpriteRenderer>();
         _startFlipX = _sprite.flipX;
         Reset();
+    }
+
+    private void OnDisable()
+    {
+        _reviver.PlayerRevived -= OnPlayerRevived;
     }
 
     public void StartJumpAnimation()
@@ -32,6 +45,14 @@ public class PlayerAnimationChanger : MonoBehaviour
     {
         PlayerLookDirection.ResetDirection();
         _animator.SetTrigger(AnimatorPlayerController.RetartTrigger);
+        _sprite.flipX = _startFlipX;
+        _currentLookDirection = PlayerLookDirection.ResetDirection();
+    }
+
+    private void OnPlayerRevived()
+    {
+        PlayerLookDirection.ResetDirection();
+        _animator.SetTrigger(AnimatorPlayerController.WallCollisionTrigger);
         _sprite.flipX = _startFlipX;
         _currentLookDirection = PlayerLookDirection.ResetDirection();
     }

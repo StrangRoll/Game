@@ -7,7 +7,7 @@ public class LevelCreator : MonoBehaviour
     [SerializeField] private Wall[] _rightWalls;
     [SerializeField] private Wall[] _leftWalls;
 
-    [Inject] private CameraMovier _cameraMovier;
+    [Inject] private WithCameraMovier _cameraMovier;
     [Inject] private GameCenter _gameCenter;
 
     private Vector3[] _rightWallsStartPosition;

@@ -1,13 +1,9 @@
 using UnityEngine.InputSystem;
 
-#if UNITY_EDITOR
 [UnityEditor.InitializeOnLoad]
-#endif
 
 public class StartIteration : IInputInteraction
 {
-    public float MaxTapDuration = 0.2f;
-
     private static bool IsFirstClickReleased = false;
 
     static StartIteration()
@@ -22,24 +18,14 @@ public class StartIteration : IInputInteraction
 
     public void Process(ref InputInteractionContext context)
     {
-        if (context.timerHasExpired || IsFirstClickReleased)
+        if (IsFirstClickReleased)
         {
             context.Canceled();
             return;
         }
 
-        switch (context.phase)
-        {
-            case InputActionPhase.Waiting:
-                context.Started();
-                context.SetTimeout(MaxTapDuration);
-                break;
-
-            case InputActionPhase.Started:
-                context.Performed();
-                IsFirstClickReleased = true;
-                break;
-        }
+        context.Performed();
+        IsFirstClickReleased = true;
     }
 
     public void Reset()

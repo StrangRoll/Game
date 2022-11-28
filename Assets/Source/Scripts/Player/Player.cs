@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameCenter _gameCenter;
 
     [Inject] private Camera _camera;
+    [Inject] private PlayerReviver _reviver;
 
     private PlayerInput _playerInput;
     private PlayerMovier _movier;
@@ -47,6 +48,7 @@ public class Player : MonoBehaviour
         _playerInput.Enable();
         _gameCenter.GameEnded += OnGameEnded;
         _gameCenter.GameRestarted += OnGameRestarted;
+        _reviver.PlayerRevived += OnPlayerRevived;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -62,6 +64,11 @@ public class Player : MonoBehaviour
         {
             _gameCenter.OnEnd();
         }
+
+        if (collision.gameObject.TryGetComponent<DeadZone>(out DeadZone deadZone))
+        {
+            _gameCenter.OnEnd();
+        }
     }
 
     private void Update()
@@ -73,11 +80,6 @@ public class Player : MonoBehaviour
             _score = currentYPosition - _startYPosition;
             ScoreChanged?.Invoke(_score);
         }
-
-        var heroScreenYPosition = _camera.WorldToScreenPoint(transform.position).y;
-
-        if (heroScreenYPosition < -_heroHalfHeight || heroScreenYPosition > _screenHeight + _heroHalfHeight)
-            _gameCenter.OnEnd();
     }
 
     private void OnDisable()
@@ -85,6 +87,13 @@ public class Player : MonoBehaviour
         _playerInput.Disable();
         _gameCenter.GameEnded -= OnGameEnded;
         _gameCenter.GameRestarted -= OnGameRestarted;
+        _reviver.PlayerRevived -= OnPlayerRevived;
+    }
+
+    public void OnPlayerRevived()
+    {
+        _collider.enabled = true;
+        _isJumping = false;
     }
 
     private void OnJump()

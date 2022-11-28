@@ -12,6 +12,7 @@ public class RowSpawnerActivator : MonoBehaviour
         _gameCenter.GameStarted += OnGameStarted;
         _gameCenter.GameEnded += OnGameEnded;
         _gameCenter.GameRestarted += OnGameRestarted;
+        _gameCenter.Game—ontinued += OnGame—ontinued;
     }
 
     private void OnDisable()
@@ -19,6 +20,7 @@ public class RowSpawnerActivator : MonoBehaviour
         _gameCenter.GameStarted -= OnGameStarted;
         _gameCenter.GameEnded -= OnGameEnded;
         _gameCenter.GameRestarted += OnGameRestarted;
+        _gameCenter.Game—ontinued -= OnGame—ontinued;
     }
 
     private void OnGameEnded()
@@ -34,5 +36,11 @@ public class RowSpawnerActivator : MonoBehaviour
     private void OnGameRestarted()
     {
         _rowSpawner.DeactivateRows();
+    }
+
+    private void OnGame—ontinued()
+    {
+        _rowSpawner.DeactivateRows();
+        _rowSpawner.enabled = true;
     }
 }
