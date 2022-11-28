@@ -13,7 +13,6 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private GameCenter _gameCenter;
 
-    [Inject] private Camera _camera;
     [Inject] private PlayerReviver _reviver;
 
     private PlayerInput _playerInput;
@@ -24,9 +23,9 @@ public class Player : MonoBehaviour
     private int _score = 0;
     private bool _isJumping = false;
     private BoxCollider2D _collider;
-    private WaitForFixedUpdate OneFixedFrame = new WaitForFixedUpdate();
-    private float _heroHalfHeight;
-    private float _screenHeight;
+    private WaitForFixedUpdate _oneFixedFrame = new WaitForFixedUpdate();
+    private bool _isActive = false;
+    private float _deltaHeight = 0;
 
     public event UnityAction<int> ScoreChanged; 
 
@@ -39,13 +38,12 @@ public class Player : MonoBehaviour
         _soundController = GetComponent<PlayerSoundController>();
         _startYPosition = (int)transform.position.y;
         _collider = GetComponent<BoxCollider2D>();
-        _heroHalfHeight = GetComponent<SpriteRenderer>().sprite.rect.height / 2;
-        _screenHeight = _camera.ViewportToScreenPoint(Vector3.up).y;
     }
 
     private void OnEnable()
     {
         _playerInput.Enable();
+        _gameCenter.GameStarted += OnGameStarted;
         _gameCenter.GameEnded += OnGameEnded;
         _gameCenter.GameRestarted += OnGameRestarted;
         _reviver.PlayerRevived += OnPlayerRevived;
@@ -75,7 +73,7 @@ public class Player : MonoBehaviour
     {
         var currentYPosition = (int)transform.position.y;
 
-        if (currentYPosition - _startYPosition > _score)
+        if (currentYPosition - _startYPosition - _deltaHeight > _score)
         {
             _score = currentYPosition - _startYPosition;
             ScoreChanged?.Invoke(_score);
@@ -85,6 +83,7 @@ public class Player : MonoBehaviour
     private void OnDisable()
     {
         _playerInput.Disable();
+        _gameCenter.GameStarted -= OnGameStarted;
         _gameCenter.GameEnded -= OnGameEnded;
         _gameCenter.GameRestarted -= OnGameRestarted;
         _reviver.PlayerRevived -= OnPlayerRevived;
@@ -96,9 +95,15 @@ public class Player : MonoBehaviour
         _isJumping = false;
     }
 
+    private void OnGameStarted()
+    {
+        _deltaHeight = transform.position.y - _deltaHeight;
+        _isActive = true;
+    }
+
     private void OnJump()
     {
-        if (_isJumping == false)
+        if (_isJumping == false && _isActive)
         {
             _movier.Jump();
             _animationChanger.StartJumpAnimation();
@@ -109,13 +114,16 @@ public class Player : MonoBehaviour
 
     private void OnGameEnded()
     {
+        _deltaHeight = transform.position.y;
         _movier.ResetGravityScale();
         _soundController.Death();
         _collider.enabled = false;
+        _isActive = false;
     }
 
     private void OnGameRestarted()
     {
+        _deltaHeight = 0;
         _collider.enabled = true;
         _movier.Reset();
         _animationChanger.Reset();
@@ -126,7 +134,7 @@ public class Player : MonoBehaviour
 
     private IEnumerator WaitOneFixedFrameAndChangeIsjumping()
     {
-        yield return OneFixedFrame;
+        yield return _oneFixedFrame;
         _isJumping = true;
     }
 }

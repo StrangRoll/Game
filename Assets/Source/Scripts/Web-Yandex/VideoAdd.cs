@@ -8,6 +8,8 @@ public class VideoAdd : MonoBehaviour
 
     public event UnityAction VideoRewardCollected;
 
+    private bool _isRewarded = false;
+
     private void OnEnable()
     {
         _gameOverUI.ContinueButtonPressed += OnContinueButtonPressed;
@@ -21,18 +23,26 @@ public class VideoAdd : MonoBehaviour
     private void OnContinueButtonPressed()
     {
 #if UNITY_EDITOR
-        OnRewarded();
+        VideoRewardCollected?.Invoke();
 #endif
 
 #if UNITY_WEBGL && !UNITY_EDITOR
-        VideoAd.Show(() => OnVideoOpened(), () => OnRewarded());
+        VideoAd.Show(() => OnVideoOpened(), () => OnRewarded(), () => OnClose());
 #endif
     }
 
-    private void OnVideoOpened(){ }
+    private void OnVideoOpened(){}
 
     private void OnRewarded()
     {
-        VideoRewardCollected?.Invoke();
+        _isRewarded = true;
+    }
+
+    private void OnClose()
+    {
+        if (_isRewarded)
+            VideoRewardCollected?.Invoke();
+
+        _isRewarded = false;
     }
 }

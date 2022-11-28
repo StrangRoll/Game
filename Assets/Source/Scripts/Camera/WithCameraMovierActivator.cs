@@ -18,7 +18,7 @@ public class WithCameraMovierActivator : MonoBehaviour
     {
         _gameCenter.GameStarted -= OnGameStarted;
         _gameCenter.GameEnded -= OnGameEnded;
-        _gameCenter.GameRestarted += OnGameRestarted;
+        _gameCenter.GameRestarted -= OnGameRestarted;
     }
 
     private void OnGameEnded()

@@ -7,8 +7,8 @@ public class GameCenter : MonoBehaviour
     [Inject] private VideoAdd _videoAdd;
 
     private PlayerInput _playerInput;
-    private GameCenter _center;
     private bool _isGameEnded = false;
+    private bool _isReadyForStart = true;
 
     public event UnityAction GameStarted;
     public event UnityAction GameEnded;
@@ -18,8 +18,7 @@ public class GameCenter : MonoBehaviour
     private void Awake()
     {
         _playerInput = new PlayerInput();
-        _playerInput.World.Start.performed += ctx => _center.OnStart();
-        _center = GetComponent<GameCenter>();
+        _playerInput.World.Start.performed += ctx => OnStart();
     }
 
     private void OnEnable()
@@ -40,25 +39,30 @@ public class GameCenter : MonoBehaviour
         {
             GameEnded?.Invoke();
             _isGameEnded = true;
+            _isReadyForStart = false;
         }
     }
 
     public void OnRestart()
     {
         _isGameEnded = false;
-        StartIteration.ResetStartIteraton();
         GameRestarted?.Invoke();
+        _isReadyForStart = true;
     }
 
     private void OnStart()
     {
-        GameStarted?.Invoke();
+        if (_isReadyForStart)
+        {
+            GameStarted?.Invoke();
+            _isReadyForStart = false;
+        }
     }
 
     private void OnVideoRewardCollected()
     {
         Game—ontinued?.Invoke();
         _isGameEnded = false;
-        StartIteration.ResetStartIteraton();
+        _isReadyForStart = true;
     }
 }

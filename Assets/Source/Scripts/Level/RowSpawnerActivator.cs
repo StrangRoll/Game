@@ -41,6 +41,5 @@ public class RowSpawnerActivator : MonoBehaviour
     private void OnGame—ontinued()
     {
         _rowSpawner.DeactivateRows();
-        _rowSpawner.enabled = true;
     }
 }

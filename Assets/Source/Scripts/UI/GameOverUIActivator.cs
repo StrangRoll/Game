@@ -53,7 +53,7 @@ public class GameOverUIActivator : MonoBehaviour
     {
         _isReviveUsed = true;
         DisableGameOverUI();
-    }
+    }   
 
     private void OnRestartButtonClicked()
     {
