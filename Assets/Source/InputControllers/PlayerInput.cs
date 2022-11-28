@@ -85,6 +85,15 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Press"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""6d8ff288-b9c7-4d56-9c37-3e68123dbd5f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -118,6 +127,17 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
                     ""action"": ""Start"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9a998719-d4a9-4fa5-a28a-05a33ffcbec6"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -160,6 +180,7 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         // World
         m_World = asset.FindActionMap("World", throwIfNotFound: true);
         m_World_Start = m_World.FindAction("Start", throwIfNotFound: true);
+        m_World_Pause = m_World.FindAction("Pause", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -253,11 +274,13 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_World;
     private IWorldActions m_WorldActionsCallbackInterface;
     private readonly InputAction m_World_Start;
+    private readonly InputAction m_World_Pause;
     public struct WorldActions
     {
         private @PlayerInput m_Wrapper;
         public WorldActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @Start => m_Wrapper.m_World_Start;
+        public InputAction @Pause => m_Wrapper.m_World_Pause;
         public InputActionMap Get() { return m_Wrapper.m_World; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -270,6 +293,9 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                 @Start.started -= m_Wrapper.m_WorldActionsCallbackInterface.OnStart;
                 @Start.performed -= m_Wrapper.m_WorldActionsCallbackInterface.OnStart;
                 @Start.canceled -= m_Wrapper.m_WorldActionsCallbackInterface.OnStart;
+                @Pause.started -= m_Wrapper.m_WorldActionsCallbackInterface.OnPause;
+                @Pause.performed -= m_Wrapper.m_WorldActionsCallbackInterface.OnPause;
+                @Pause.canceled -= m_Wrapper.m_WorldActionsCallbackInterface.OnPause;
             }
             m_Wrapper.m_WorldActionsCallbackInterface = instance;
             if (instance != null)
@@ -277,6 +303,9 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                 @Start.started += instance.OnStart;
                 @Start.performed += instance.OnStart;
                 @Start.canceled += instance.OnStart;
+                @Pause.started += instance.OnPause;
+                @Pause.performed += instance.OnPause;
+                @Pause.canceled += instance.OnPause;
             }
         }
     }
@@ -306,5 +335,6 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
     public interface IWorldActions
     {
         void OnStart(InputAction.CallbackContext context);
+        void OnPause(InputAction.CallbackContext context);
     }
 }

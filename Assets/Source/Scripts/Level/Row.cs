@@ -1,9 +1,18 @@
 using UnityEngine;
+using Zenject;
 
-public class Row : MonoBehaviour
+public class Row : MonoBehaviour, IPauseHandler
 {
+    [Inject] private PauseManager _pauseManager;
+
     private int _direction;
+    private float _currentSpeed;
     private float _speed;
+
+    private void OnEnable()
+    {
+        _pauseManager.Register(this);
+    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -15,13 +24,31 @@ public class Row : MonoBehaviour
 
     private void Update()
     {
-        transform.position += Vector3.right * _direction * _speed * Time.deltaTime;
+        transform.position += Vector3.right * _direction * _currentSpeed * Time.deltaTime;
+    }
+
+    private void OnDisable()
+    {
+        _pauseManager.Register(this);
     }
 
     public void Init(int startDirection, float speed)
     {
         _direction = startDirection;
         _speed = speed;
+        _currentSpeed = speed;
+    }
+
+    public void Pause(bool isPause)
+    {
+        if (isPause)
+        {
+            _currentSpeed = 0;
+        }
+        else
+        {
+            _currentSpeed = _speed;
+        }
     }
 }
 

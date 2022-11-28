@@ -3,21 +3,25 @@ using Zenject;
 
 [RequireComponent(typeof(Rigidbody2D))]
 
-public class PlayerMovier : MonoBehaviour
+public class PlayerMovier : MonoBehaviour, IPauseHandler
 {
     [SerializeField] private float _jumpForce;
 
     [Inject] private PlayerReviver _reviver;
+    [Inject] private PauseManager _pauseManager;
 
     private Rigidbody2D _rigidBody;
     private Vector3 _startPosition;
     private Quaternion _startRotation;
     private Vector2 _currentJumpDirection;
     private float _startGravityScale;
+    private Vector2 _oldVelocity;
+    private float _oldGravityScale;
 
     private void OnEnable()
     {
         _reviver.PlayerRevived += OnPlayerRevived;
+        _pauseManager.Register(this);
     }
 
     private void Start()
@@ -32,12 +36,13 @@ public class PlayerMovier : MonoBehaviour
     private void OnDisable()
     {
         _reviver.PlayerRevived -= OnPlayerRevived;
+        _pauseManager.UnRegister(this);
     }
 
     public void Jump()
     {
         _rigidBody.gravityScale = _startGravityScale; 
-        _rigidBody.AddForce(_currentJumpDirection * _jumpForce, ForceMode2D.Impulse);
+        _rigidBody.velocity = _currentJumpDirection * _jumpForce;
         _currentJumpDirection = PlayerJumpDirection.ChangeDirection(_currentJumpDirection);
     }
 
@@ -58,6 +63,22 @@ public class PlayerMovier : MonoBehaviour
     public void ResetGravityScale()
     {
         _rigidBody.gravityScale = _startGravityScale;
+    }
+
+    public void Pause(bool isPause)
+    {
+        if (isPause)
+        {
+            _oldVelocity = _rigidBody.velocity;
+            _rigidBody.velocity = Vector2.zero;
+            _oldGravityScale = _rigidBody.gravityScale;
+            _rigidBody.gravityScale = 0;
+        }
+        else
+        {
+            _rigidBody.gravityScale = _oldGravityScale;
+            _rigidBody.velocity = _oldVelocity;
+        }
     }
 
     private void OnPlayerRevived()

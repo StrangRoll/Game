@@ -13,6 +13,8 @@ public class RowSpawner : MonoBehaviour
     [SerializeField] private float _maxRowSpeed;
 
     [Inject] private Camera _camera;
+    [Inject] private PauseManager _pauseManager;
+    [Inject] private DiContainer _diContainer;
 
     private float _leftSpawnX;
     private float _rightSpawnX;
@@ -20,6 +22,7 @@ public class RowSpawner : MonoBehaviour
     private IEnumerator _spawnCoroutine;
     private Row[] _rows;
     private int _rowCount = 5;
+    
 
     private void Awake()
     {
@@ -32,9 +35,9 @@ public class RowSpawner : MonoBehaviour
 
         for (int i = 0; i < _rowCount; i++)
         {
-            var newRow = Instantiate(_rowPrefab, Vector3.zero, Quaternion.identity, transform);
-            newRow.gameObject.SetActive(false);
-            _rows[i] = newRow;
+            var newRow = _diContainer.InstantiatePrefab(_rowPrefab, Vector3.zero, Quaternion.identity, transform);
+            newRow.SetActive(false);
+            _rows[i] = newRow.GetComponent<Row>();
         }
     }
 
@@ -63,6 +66,9 @@ public class RowSpawner : MonoBehaviour
 
         while (true)
         {
+            while (_pauseManager.IsPaused)
+                yield return null;
+
             var timeBeforNewRow = Random.Range(_minSecondsBetweenSpawn, _maxSecondsBetweenSpawn);
             var newRowX = Random.Range(_leftSpawnX, _rightSpawnX);
             var newRowY = _camera.ScreenToWorldPoint(Vector3.up * _spawnHeight).y;

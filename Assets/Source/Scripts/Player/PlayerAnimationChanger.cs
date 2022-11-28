@@ -2,9 +2,10 @@ using UnityEngine;
 using Zenject;
 
 [RequireComponent(typeof(Animator))]
-public class PlayerAnimationChanger : MonoBehaviour
+public class PlayerAnimationChanger : MonoBehaviour, IPauseHandler
 {
     [Inject] private PlayerReviver _reviver;
+    [Inject] private PauseManager _pauseManager;
 
     private Animator _animator;
     private SpriteRenderer _sprite;
@@ -14,6 +15,7 @@ public class PlayerAnimationChanger : MonoBehaviour
     private void OnEnable()
     {
         _reviver.PlayerRevived += OnPlayerRevived;
+        _pauseManager.Register(this);
     }
 
     private void Start()
@@ -27,6 +29,7 @@ public class PlayerAnimationChanger : MonoBehaviour
     private void OnDisable()
     {
         _reviver.PlayerRevived -= OnPlayerRevived;
+        _pauseManager.UnRegister(this);
     }
 
     public void StartJumpAnimation()
@@ -39,6 +42,18 @@ public class PlayerAnimationChanger : MonoBehaviour
         _animator.SetTrigger(AnimatorPlayerController.WallCollisionTrigger);
         _currentLookDirection = PlayerLookDirection.ChangeDirection(_currentLookDirection);
         _sprite.flipX = _currentLookDirection;
+    }
+
+    public void Pause(bool isPause)
+    {
+        if (isPause)
+        {
+            _animator.speed = 0;
+        }
+        else
+        {
+            _animator.speed = 1;
+        }
     }
 
     public void Reset()
