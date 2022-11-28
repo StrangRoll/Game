@@ -7,13 +7,14 @@ public class GameCenter : MonoBehaviour
     [Inject] private VideoAdd _videoAdd;
 
     private PlayerInput _playerInput;
-    private bool _isGameEnded = false;
     private bool _isReadyForStart = true;
 
     public event UnityAction GameStarted;
     public event UnityAction GameEnded;
     public event UnityAction GameRestarted;
     public event UnityAction Game—ontinued;
+
+    public bool IsGameEnded { get; private set; } = false;
 
     private void Awake()
     {
@@ -35,17 +36,17 @@ public class GameCenter : MonoBehaviour
 
     public void OnEnd()
     {
-        if (_isGameEnded == false)
+        if (IsGameEnded == false)
         {
             GameEnded?.Invoke();
-            _isGameEnded = true;
+            IsGameEnded = true;
             _isReadyForStart = false;
         }
     }
 
     public void OnRestart()
     {
-        _isGameEnded = false;
+        IsGameEnded = false;
         GameRestarted?.Invoke();
         _isReadyForStart = true;
     }
@@ -62,7 +63,7 @@ public class GameCenter : MonoBehaviour
     private void OnVideoRewardCollected()
     {
         Game—ontinued?.Invoke();
-        _isGameEnded = false;
+        IsGameEnded = false;
         _isReadyForStart = true;
     }
 }

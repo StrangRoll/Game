@@ -1,9 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class PauseManager : MonoBehaviour, IPauseHandler
 {
     [SerializeField] private PauseInputRoot _root;
+
+    [Inject] private GameCenter _gameCenter;
 
     private List<IPauseHandler> _pauseHandlers = new List<IPauseHandler>();
 
@@ -21,11 +24,14 @@ public class PauseManager : MonoBehaviour, IPauseHandler
 
     public void Pause(bool isPause)
     {
-        IsPaused = isPause;
-
-        foreach (var pauseHandler in _pauseHandlers)
+        if (_gameCenter.IsGameEnded == false)
         {
-            pauseHandler.Pause(isPause);
+            IsPaused = isPause;
+
+            foreach (var pauseHandler in _pauseHandlers)
+            {
+                pauseHandler.Pause(isPause);
+            }
         }
     }
 
