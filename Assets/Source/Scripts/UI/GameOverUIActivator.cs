@@ -1,14 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class GameOverUIActivator : MonoBehaviour
 {
-    [SerializeField] private GameCenter _gameCenter;
     [SerializeField] private TMP_Text _gameOverText;
     [SerializeField] private Button _restartButton;
+
+    [Inject] private GameCenter _gameCenter;
 
     private void OnEnable()
     {

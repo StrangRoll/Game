@@ -1,11 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class RowSpawnerActivator : MonoBehaviour
 {
-    [SerializeField] private GameCenter _gameCenter;
     [SerializeField] private RowSpawner _rowSpawner;
+
+    [Inject] private GameCenter _gameCenter;
 
     private void OnEnable()
     {

@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using Zenject;
 
 [RequireComponent(typeof(PlayerMovier))]
 [RequireComponent(typeof(PlayerAnimationChanger))]
@@ -12,6 +13,8 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private GameCenter _gameCenter;
 
+    [Inject] private Camera _camera;
+
     private PlayerInput _playerInput;
     private PlayerMovier _movier;
     private PlayerAnimationChanger _animationChanger;
@@ -21,7 +24,6 @@ public class Player : MonoBehaviour
     private bool _isJumping = false;
     private BoxCollider2D _collider;
     private WaitForFixedUpdate OneFixedFrame = new WaitForFixedUpdate();
-    private Camera _camera;
     private float _heroHalfHeight;
     private float _screenHeight;
 
@@ -36,7 +38,6 @@ public class Player : MonoBehaviour
         _soundController = GetComponent<PlayerSoundController>();
         _startYPosition = (int)transform.position.y;
         _collider = GetComponent<BoxCollider2D>();
-        _camera = Camera.main;
         _heroHalfHeight = GetComponent<SpriteRenderer>().sprite.rect.height / 2;
         _screenHeight = _camera.ViewportToScreenPoint(Vector3.up).y;
     }

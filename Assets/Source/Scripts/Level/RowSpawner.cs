@@ -1,6 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class RowSpawner : MonoBehaviour
 {
@@ -11,7 +11,8 @@ public class RowSpawner : MonoBehaviour
     [SerializeField] private Row _rowPrefab;
     [SerializeField] private float _minRowSpeed;
     [SerializeField] private float _maxRowSpeed;
-    [SerializeField] private Camera _camera;
+
+    [Inject] private Camera _camera;
 
     private float _leftSpawnX;
     private float _rightSpawnX;

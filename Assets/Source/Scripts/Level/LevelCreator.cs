@@ -1,13 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class LevelCreator : MonoBehaviour
 {
-    [SerializeField] private CameraMovier _cameraMovier;
     [SerializeField] private Wall[] _rightWalls;
     [SerializeField] private Wall[] _leftWalls;
-    [SerializeField] private GameCenter _gameCenter;
+
+    [Inject] private CameraMovier _cameraMovier;
+    [Inject] private GameCenter _gameCenter;
 
     private Vector3[] _rightWallsStartPosition;
     private Vector3[] _leftWallsStartPosition;

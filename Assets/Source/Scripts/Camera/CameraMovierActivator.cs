@@ -1,11 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class CameraMovierActivator : MonoBehaviour
 {
-    [SerializeField] private GameCenter _gameCenter;
-    [SerializeField] private CameraMovier _cameraMovier;
+    [Inject] private GameCenter _gameCenter;
+    [Inject] private CameraMovier _cameraMovier;
 
     private void OnEnable()
     {
